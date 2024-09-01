@@ -1,113 +1,124 @@
-import Image from "next/image";
+"use client";
+
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { AudioPlayer } from "../components/AudioPlayer";
+import { fetchFile, toBlobURL } from "@ffmpeg/util";
+import { useRef, useState } from "react";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const [loaded, setLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const ffmpegRef = useRef(new FFmpeg());
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const messageRef = useRef<HTMLParagraphElement | null>(null);
+
+  const [audio, setAudio] = useState<File | null>();
+  const [output, setOutput] = useState<string | null>();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const load = async () => {
+    setIsLoading(true);
+    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
+    const ffmpeg = ffmpegRef.current;
+    ffmpeg.on("log", ({ message }) => {
+      if (messageRef.current) messageRef.current.innerHTML = message;
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.wasm`,
+        "application/wasm"
+      ),
+    });
+    setLoaded(true);
+    setIsLoading(false);
+  };
+
+  const setInputAudio = async (input: File | null | undefined) => {
+    if (input instanceof File) {
+      setAudio(input);
+    }
+  };
+
+  const trimAudio = async () => {
+    const ffmpeg = ffmpegRef.current;
+    await ffmpeg.writeFile("input.mp3", await fetchFile(audio!));
+    await ffmpeg.exec([
+      "-ss",
+      "10",
+      "-i",
+      "input.mp3",
+      "-t",
+      "5",
+      "-c",
+      "copy",
+      "output.mp3",
+    ]);
+    const data = (await ffmpeg.readFile("output.mp3")) as any;
+    if (audioRef.current) {
+      let url = URL.createObjectURL(
+        new Blob([data.buffer], { type: "audio/mp3" })
+      );
+      audioRef.current.src == url;
+      setOutput(url);
+    }
+  };
+
+  const start = () => {
+    if (output) {
+      console.log("hi");
+      let play = new Audio(output);
+      play.play();
+    }
+  };
+
+  return loaded ? (
+    <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+      {/* <audio ref={audioRef} controls>
+        {audio ? (
+          <source src={URL.createObjectURL(audio)} type="audio/mp3" />
+        ) : (
+          <></>
+        )}
+      </audio> */}
+      {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>}
+      <button onClick={start}>Play</button>
+      <br />
+      <input
+        type="file"
+        onChange={(e) => setInputAudio(e.target.files?.item(0))}
+      />
+      <button
+        onClick={trimAudio}
+        className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded"
+      >
+        Trim the audio
+      </button>
+      <p ref={messageRef}></p>
+    </div>
+  ) : (
+    <button
+      className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+      onClick={load}
+    >
+      Load ffmpeg-core
+      {isLoading && (
+        <span className="animate-spin ml-3">
+          <svg
+            viewBox="0 0 1024 1024"
+            focusable="false"
+            data-icon="loading"
+            width="1em"
+            height="1em"
+            fill="currentColor"
+            aria-hidden="true"
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <path d="M988 548c-19.9 0-36-16.1-36-36 0-59.4-11.6-117-34.6-171.3a440.45 440.45 0 00-94.3-139.9 437.71 437.71 0 00-139.9-94.3C629 83.6 571.4 72 512 72c-19.9 0-36-16.1-36-36s16.1-36 36-36c69.1 0 136.2 13.5 199.3 40.3C772.3 66 827 103 874 150c47 47 83.9 101.8 109.7 162.7 26.7 63.1 40.2 130.2 40.2 199.3.1 19.9-16 36-35.9 36z"></path>
+          </svg>
+        </span>
+      )}
+    </button>
   );
 }

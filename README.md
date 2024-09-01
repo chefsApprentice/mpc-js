@@ -1,5 +1,15 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Checklist
+
+[x] Create a snippet
+
+- [] It broke , fix it lol
+- [] Based on time
+- [] Turn into a component
+  [] Create custom audio player
+  [] Styling
+
 ## Getting Started
 
 First, run the development server:

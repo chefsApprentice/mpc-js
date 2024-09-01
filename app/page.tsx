@@ -3,18 +3,29 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const messageRef = useRef<HTMLParagraphElement | null>(null);
 
   const [audio, setAudio] = useState<File | null>();
   const [output, setOutput] = useState<string | null>();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef(audio);
+
+  const trimTime = useRef([0.0, 0.1]);
+  const [trimming, setTrimming] = useState(false);
+
+  const [samples, setSamples] = useState([]);
+
+  useEffect(() => {
+    if (trimming) {
+      trimAudio();
+      setTrimming(false);
+    }
+  }, [trimming]);
 
   const load = async () => {
     setIsLoading(true);
@@ -48,29 +59,30 @@ export default function Home() {
 
   const trimAudio = async () => {
     const ffmpeg = ffmpegRef.current;
-    await ffmpeg.writeFile("input.mp3", await fetchFile(audio!));
+    let input = audio;
+    await ffmpeg.writeFile("input.mp3", await fetchFile(input!));
+    let duration = trimTime.current[1] - trimTime.current[0];
+    console.log("trim", trimTime);
     await ffmpeg.exec([
       "-ss",
-      "10",
+      trimTime.current[0].toString(),
       "-i",
       "input.mp3",
       "-t",
-      "5",
+      duration.toString(),
       "-c",
       "copy",
       "output.mp3",
     ]);
     const data = (await ffmpeg.readFile("output.mp3")) as any;
-    if (audioRef.current) {
-      let url = URL.createObjectURL(
-        new Blob([data.buffer], { type: "audio/mp3" })
-      );
-      audioRef.current.src == url;
-      setOutput(url);
-    }
+    let url = URL.createObjectURL(
+      new Blob([data.buffer], { type: "audio/mp3" })
+    );
+    setOutput(url);
   };
 
   const start = () => {
+    console.log("clkicked");
     if (output) {
       console.log("hi");
       let play = new Audio(output);
@@ -87,18 +99,33 @@ export default function Home() {
           <></>
         )}
       </audio> */}
-      {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>}
-      <button onClick={start}>Play</button>
+      {audio ? (
+        <AudioPlayer
+          audioFile={URL.createObjectURL(audio)}
+          trimTime={trimTime}
+          trimming={trimming}
+          setTrimming={setTrimming}
+        />
+      ) : (
+        <></>
+      )}
       <br />
       <input
         type="file"
         onChange={(e) => setInputAudio(e.target.files?.item(0))}
       />
-      <button
+      {/* <button
         onClick={trimAudio}
         className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded"
       >
         Trim the audio
+      </button> */}
+      <br />
+      <button
+        onClick={start}
+        className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded mt-10"
+      >
+        Play
       </button>
     </div>
   ) : (

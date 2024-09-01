@@ -7,7 +7,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
   - [] Based on time
   - [] Turn into a component
 - [x] Create custom audio player
-  - [] Fix looping
+  - [x] Fix looping
+- [] may need to look out for regions start and end time with min max
 - [] Styling
 
 ## Getting Started

@@ -87,7 +87,7 @@ export default function Home() {
           <></>
         )}
       </audio> */}
-      {/* {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>} */}
+      {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>}
       <button onClick={start}>Play</button>
       <br />
       <input

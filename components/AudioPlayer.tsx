@@ -19,6 +19,7 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
   const loopRef = useRef(looping);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
+  const [zoom, setZoom] = useState(10);
   const [duration, setDuration] = useState(0);
   const [curTime, setCurTime] = useState(0);
   const [trimTime, setTrimTime] = useState([0.0, 0.1]);
@@ -34,9 +35,15 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
     setPlaying(!playing);
     waveSurfer.current.playPause();
   };
+
   let handleLoop = () => {
     setLooping(!looping);
     loopRef.current = !loopRef;
+  };
+
+  let handleZoom = (newZoom: number) => {
+    setZoom(newZoom);
+    waveSurfer.current.zoom(Number(newZoom));
   };
 
   let handleVolumeChange = (newVol: number) => {
@@ -73,6 +80,7 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
 
       regions.on("region-out", (region) => {
         if (activeRegion === region) {
+          console.log("looping", looping, loopRef.current);
           if (loopRef.current) {
             region.play();
           } else {
@@ -115,7 +123,7 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
   };
 
   return (
-    <div>
+    <div className="w-96">
       <div className="controls">
         {/* You should add a link / download button */}
 
@@ -209,12 +217,23 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
         id="waveform"
         ref={waveFormRef}
         style={{
-          width: "100%",
           padding: 10,
           backgroundColor: "#27C19A",
           borderRadius: "15px",
         }}
       ></div>
+      {/* Zoom */}
+      <input
+        type="range"
+        className="w-96"
+        id="zoom"
+        name="zoom"
+        min="0"
+        max="50"
+        step="0.1"
+        value={zoom}
+        onChange={(e) => handleZoom(parseFloat(e.target.value))}
+      />
     </div>
   );
 };

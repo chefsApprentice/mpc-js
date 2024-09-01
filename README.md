@@ -2,13 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Checklist
 
-[x] Create a snippet
-
-- [] It broke , fix it lol
-- [] Based on time
-- [] Turn into a component
-  [] Create custom audio player
-  [] Styling
+- [x] Create a snippet
+  - [] It broke , fix it lol
+  - [] Based on time
+  - [] Turn into a component
+- [] Create custom audio player
+- [] Styling
 
 ## Getting Started
 

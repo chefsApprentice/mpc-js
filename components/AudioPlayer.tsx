@@ -16,11 +16,12 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
   let waveSurfer: any = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [looping, setLooping] = useState(false);
+  const loopRef = useRef(looping);
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [duration, setDuration] = useState(0);
   const [curTime, setCurTime] = useState(0);
-  const [audioFileName, setAudioFileName] = useState("");
+  const [trimTime, setTrimTime] = useState([0.0, 0.1]);
 
   let formatTime = (seconds: number) => {
     let date = new Date(0);
@@ -32,6 +33,10 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
   let handlePlayPause = () => {
     setPlaying(!playing);
     waveSurfer.current.playPause();
+  };
+  let handleLoop = () => {
+    setLooping(!looping);
+    loopRef.current = !loopRef;
   };
 
   let handleVolumeChange = (newVol: number) => {
@@ -50,12 +55,48 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
     waveSurfer.current = WaveSurfer.create(options);
     waveSurfer.current.load(audioFile);
 
+    waveSurfer.current.on("decode", () => {
+      regions.addRegion({
+        start: 0,
+        end: 8,
+        color: "rgba(0, 101, 79, 0.3)",
+        drag: false,
+        resize: true,
+      });
+    });
+
+    {
+      let activeRegion: any = null;
+      regions.on("region-in", (region) => {
+        activeRegion = region;
+      });
+
+      regions.on("region-out", (region) => {
+        if (activeRegion === region) {
+          if (loopRef.current) {
+            region.play();
+          } else {
+            activeRegion = null;
+          }
+        }
+      });
+
+      regions.on("region-clicked", (region, e) => {
+        e.stopPropagation(); // prevent triggering a click on the waveform
+        activeRegion = region;
+        region.play();
+      });
+
+      // Reset the active region when the user clicks anywhere in the waveform
+      waveSurfer.current.on("interaction", () => {
+        activeRegion = null;
+      });
+    }
+
     waveSurfer.current.on("ready", () => {
       setVolume(waveSurfer.current!.getVolume());
       setDuration(waveSurfer.current!.getDuration());
-      setAudioFileName(audioFile.split("/").pop()!);
     });
-    waveSurfer.current.on("decode", () => {});
 
     waveSurfer.current.on("audioprocess", () => {
       setCurTime(waveSurfer.current.getCurrentTime());
@@ -66,7 +107,12 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
       waveSurfer.current.un("ready");
       waveSurfer.current.destroy();
     };
-  }, [audioFile]);
+  }, [audioFile, loopRef.current]);
+
+  let handleTrim = () => {
+    let region = regions.getRegions()[0];
+    setTrimTime([region.start, region.end]);
+  };
 
   return (
     <div>
@@ -74,13 +120,13 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
         {/* You should add a link / download button */}
 
         {/* Loop */}
-        <button onClick={() => setLooping(true)}>
+        <button onClick={handleLoop} id="looping" aria-label={"val:" + looping}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
+            stroke={looping ? "#27C19A" : "currentColor"}
             className="size-6"
           >
             <path
@@ -152,10 +198,12 @@ export let AudioPlayer = ({ audioFile }: { audioFile: string }) => {
           value={muted ? 0 : volume}
           onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
         />
-        <span>
+
+        <span>{Math.round(volume * 100)}%</span>
+
+        <span className="float-right">
           {formatTime(curTime)} : {formatTime(duration)}
         </span>
-        <span>Volume: {Math.round(volume * 100)}%</span>
       </div>
       <div
         id="waveform"

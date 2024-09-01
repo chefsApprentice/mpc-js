@@ -3,7 +3,7 @@
 import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -35,6 +35,10 @@ export default function Home() {
     setLoaded(true);
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    load();
+  }, []);
 
   const setInputAudio = async (input: File | null | undefined) => {
     if (input instanceof File) {
@@ -83,7 +87,7 @@ export default function Home() {
           <></>
         )}
       </audio> */}
-      {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>}
+      {/* {audio ? <AudioPlayer audioFile={URL.createObjectURL(audio)} /> : <></>} */}
       <button onClick={start}>Play</button>
       <br />
       <input
@@ -96,14 +100,10 @@ export default function Home() {
       >
         Trim the audio
       </button>
-      <p ref={messageRef}></p>
     </div>
   ) : (
-    <button
-      className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
-      onClick={load}
-    >
-      Load ffmpeg-core
+    <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center text-white py-2 px-4 rounded">
+      Loading{" "}
       {isLoading && (
         <span className="animate-spin ml-3">
           <svg
@@ -119,6 +119,6 @@ export default function Home() {
           </svg>
         </span>
       )}
-    </button>
+    </div>
   );
 }

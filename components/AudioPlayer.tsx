@@ -13,13 +13,11 @@ import {
 export let AudioPlayer = ({
   audioFile,
   trimTime,
-  trimming,
   setTrimming,
 }: {
   audioFile: string;
   trimTime: MutableRefObject<number[]>;
-  trimming: boolean;
-  setTrimming: Dispatch<SetStateAction<boolean>>;
+  setTrimming: any;
 }) => {
   const regions = RegionsPlugin.create();
   const waveSurferOptions = (ref: any) => ({
@@ -150,7 +148,7 @@ export let AudioPlayer = ({
         {/* You should add a link / download button */}
 
         {/* Trim */}
-        <button onClick={handleTrim} disabled={trimming}>
+        <button onClick={handleTrim}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

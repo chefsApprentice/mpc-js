@@ -3,13 +3,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ## Checklist
 
 - [x] Create a snippet
-  - []
-  - [] Based on time
-  - [] Turn into a component
+  - [x] Based on time
+  - [x] Turn into a component
+  - [ ] Fix refresh on trim
 - [x] Create custom audio player
-  - [x] Fix looping
-- [] may need to look out for regions start and end time with min max
-- [] Styling
+  - [ ] Fix looping
+- [ ]
+- [ ] may need to look out for regions start and end time with min max
+- [ ] Styling
 
 ## Getting Started
 

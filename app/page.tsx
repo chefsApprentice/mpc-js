@@ -4,6 +4,12 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { NoteNode } from "@/components/NoteNode";
+import { Sampler } from "@/components/Sampler";
+
+export interface ISample {
+  url: string;
+}
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -12,20 +18,23 @@ export default function Home() {
   const messageRef = useRef<HTMLParagraphElement | null>(null);
 
   const [audio, setAudio] = useState<File | null>();
-  const [output, setOutput] = useState<string | null>();
+  // const [output, setOutput] = useState<string | null>();
   const audioRef = useRef(audio);
 
   const trimTime = useRef([0.0, 0.1]);
-  const [trimming, setTrimming] = useState(false);
 
-  const [samples, setSamples] = useState([]);
+  let handleTrim = () => {
+    trimAudio();
+  };
 
-  useEffect(() => {
-    if (trimming) {
-      trimAudio();
-      setTrimming(false);
-    }
-  }, [trimming]);
+  const [samples, setSamples] = useState<ISample[]>([]);
+
+  // useEffect(() => {
+  //   if (trimming) {
+  //     trimAudio();
+  //     setTrimming(false);
+  //   }
+  // }, [trimming]);
 
   const load = async () => {
     setIsLoading(true);
@@ -54,6 +63,7 @@ export default function Home() {
   const setInputAudio = async (input: File | null | undefined) => {
     if (input instanceof File) {
       setAudio(input);
+      audioRef.current = input;
     }
   };
 
@@ -78,16 +88,8 @@ export default function Home() {
     let url = URL.createObjectURL(
       new Blob([data.buffer], { type: "audio/mp3" })
     );
-    setOutput(url);
-  };
-
-  const start = () => {
-    console.log("clkicked");
-    if (output) {
-      console.log("hi");
-      let play = new Audio(output);
-      play.play();
-    }
+    // setOutput(url);
+    setSamples([...samples, { url: url }]);
   };
 
   return loaded ? (
@@ -101,10 +103,9 @@ export default function Home() {
       </audio> */}
       {audio ? (
         <AudioPlayer
-          audioFile={URL.createObjectURL(audio)}
+          audioFile={URL.createObjectURL(audioRef.current!)}
           trimTime={trimTime}
-          trimming={trimming}
-          setTrimming={setTrimming}
+          setTrimming={handleTrim}
         />
       ) : (
         <></>
@@ -121,12 +122,13 @@ export default function Home() {
         Trim the audio
       </button> */}
       <br />
-      <button
+      <Sampler samples={samples} />
+      {/* <button
         onClick={start}
         className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded mt-10"
       >
         Play
-      </button>
+      </button> */}
     </div>
   ) : (
     <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center text-white py-2 px-4 rounded">

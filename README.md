@@ -1,17 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Checklist
-
-- [x] Create a snippet
-  - [x] Based on time
-  - [x] Turn into a component
-  - [ ] Fix refresh on trim
-- [x] Create custom audio player
-  - [ ] Fix looping
-- [ ]
-- [ ] may need to look out for regions start and end time with min max
-- [ ] Styling
-
 ## Getting Started
 
 First, run the development server:
@@ -21,6 +7,23 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Checklist
+
+- [x] Create a snippet
+  - [x] Based on time
+  - [x] Turn into a component
+- [x] Create custom audio player
+- [ ] Create mpc
+- [ ] Add support for other formats
+- [ ] may need to look out for regions start and end time with min max
+- [ ] Styling
+
+# Bugs
+
+- [ ] Fix refresh on trim
+- [ ] Fix Player looping
+- [ ] Fix default trim time not working
 
 ## Deploy on Vercel
 

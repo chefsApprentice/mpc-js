@@ -1,19 +1,28 @@
-export let NoteNode = ({ audio }: { audio: string }) => {
-  const start = () => {
-    console.log("clkicked");
-    if (audio) {
-      console.log("hi");
-      let play = new Audio(audio);
-      play.play();
-    }
+import { useState } from "react";
+
+export let NoteNode = ({
+  id,
+  handleEnabled,
+}: {
+  id: number;
+  handleEnabled: any;
+}) => {
+  let [enabled, setEnabled] = useState(false);
+
+  let handleSwitch = () => {
+    setEnabled(!enabled);
+    handleEnabled(id, enabled);
   };
 
   return (
     <button
-      onClick={start}
-      className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded mt-10"
-    >
-      Play
-    </button>
+      className={
+        (enabled
+          ? "bg-red-600 hover:bg-red-700  "
+          : "bg-gray-50 hover:bg-gray-200") +
+        " text-white py-5 px-5 ml-5 rounded "
+      }
+      onClick={handleSwitch}
+    ></button>
   );
 };

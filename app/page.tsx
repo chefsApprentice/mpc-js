@@ -4,18 +4,15 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { NoteNode } from "@/components/NoteNode";
-import { Sampler } from "@/components/Sampler";
-
-export interface ISample {
-  url: string;
-}
+import { ISample, Sampler } from "@/components/Sampler";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const ffmpegRef = useRef(new FFmpeg());
   const messageRef = useRef<HTMLParagraphElement | null>(null);
+
+  const sampleIdCounter = useRef(0);
 
   const [audio, setAudio] = useState<File | null>();
   // const [output, setOutput] = useState<string | null>();
@@ -67,7 +64,7 @@ export default function Home() {
     }
   };
 
-  const trimAudio = async () => {
+  let trimAudio = async () => {
     const ffmpeg = ffmpegRef.current;
     let input = audio;
     await ffmpeg.writeFile("input.mp3", await fetchFile(input!));
@@ -89,11 +86,29 @@ export default function Home() {
       new Blob([data.buffer], { type: "audio/mp3" })
     );
     // setOutput(url);
-    setSamples([...samples, { url: url }]);
+
+    // Create an all false array with 12 sectiuons of 8 beats
+    const defaultArray: boolean[][] = new Array(12)
+      .fill(false)
+      .map(() => new Array(8).fill(false));
+
+    sampleIdCounter.current += 1;
+
+    setSamples([
+      ...samples,
+      {
+        id: sampleIdCounter.current,
+        url: url,
+        // Name: "Sample " + sampleIdCounter,
+        // Volume: 0.5,
+        Sequence: defaultArray,
+      },
+    ]);
   };
 
   return loaded ? (
-    <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+    // <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+    <div className="ml-40">
       {/* <audio ref={audioRef} controls>
         {audio ? (
           <source src={URL.createObjectURL(audio)} type="audio/mp3" />
@@ -101,15 +116,18 @@ export default function Home() {
           <></>
         )}
       </audio> */}
-      {audio ? (
-        <AudioPlayer
-          audioFile={URL.createObjectURL(audioRef.current!)}
-          trimTime={trimTime}
-          setTrimming={handleTrim}
-        />
-      ) : (
-        <></>
-      )}
+      <div className=" flex flex-row  mt-20">
+        <p className="text-red-500 font-black text-6xl  pr-10 ">MPC JS</p>
+        {audio ? (
+          <AudioPlayer
+            audioFile={URL.createObjectURL(audioRef.current!)}
+            trimTime={trimTime}
+            setTrimming={handleTrim}
+          />
+        ) : (
+          <></>
+        )}
+      </div>
       <br />
       <input
         type="file"

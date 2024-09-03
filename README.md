@@ -30,6 +30,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [ ] Fix Player looping
 - [ ] Fix default trim time not working
 - [ ] What happens if no sequence enabled?
+- [ ] Wont play if sound is currently playing
 
 ## Deploy on Vercel
 

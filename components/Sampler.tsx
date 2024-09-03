@@ -39,6 +39,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     false,
     false,
   ]);
+  const [timerCount, setTimerCount] = useState(0);
 
   let samplerInfo: ISampler = { BPM: 80, SequenceShowing: 0 };
 
@@ -46,7 +47,17 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
   //   if (samples[curSequence].Sequence[index]) samples[curSequence].url;
   // };
 
+  let handleBPM = (newBPM: number) => {
+    if (newBPM <= 10) setBPM(10);
+    else if (newBPM >= 500) setBPM(500);
+    else setBPM(newBPM);
+  };
+
   let playSequence = () => {
+    console.log("Hi");
+    // const loop = () => {
+    if (!playing) return;
+    console.log("we made it");
     playNoteChannel.emit("onPlayNote", curIndex);
 
     if (curIndex + 1 >= 8) {
@@ -56,6 +67,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
       let findSeq = laterSequence.findIndex((seq) => seq == true);
       if (findSeq != -1) {
         setCurSequence(curSequence + 1 + findSeq);
+        // setTimeout(loop, delay);
         return;
       }
 
@@ -63,34 +75,59 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
       findSeq = preSeq.findIndex((seq) => seq == true);
       if (findSeq != -1) {
         setCurSequence(findSeq);
+        // return;
+        // setTimeout(loop, delay);
         return;
       }
 
       // curSequence is the same otherwise, we have already reset index
+      // return;
+      // setTimeout(loop, delay);
       return;
     }
 
     setCurIndex(curIndex + 1);
     console.log(curIndex);
+
+    // return () => clearInterval(customInterval);
+    // Kickstart
+    // loop();
   };
 
   let handlePlayPause = () => {
     setPlaying(!playing);
-    if (!playing) return;
-
-    playSequence();
+    if (!playing) {
+      setCurIndex(curIndex + 1);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      // playSequence();
+    }
   };
+
+  useEffect(() => {
+    const delay = 60000 / BPM;
+    console.log("em" + curIndex);
+
+    const timer = setInterval(() => {
+      playSequence();
+    }, delay);
+
+    return () => clearInterval(timer);
+  });
 
   // useEffect(() => {
   //   let delay = 60000 / BPM;
+  //   delay = 1000;
   //   const timePlay = setTimeout(() => playSequence, delay);
+
+  //   // playSequence();
 
   //   return () => clearTimeout(timePlay);
   // }, [playing]);
 
   return (
     <div>
-      <div>
+      {/* Controls */}
+      <div className="flex flex-row align-middle justify-center items-center align-text-middle w-64 ">
         {/* Play / Pause */}
         <button onClick={handlePlayPause} className="bg-gray-200 p-2 m-2 ml-0">
           {playing ? (
@@ -145,7 +182,20 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
             />
           </svg>
         </button>
+        {/* BPM */}
+        <div className="flex flex-row bg-gray-200 p-2 w-26 h-10 mr-0">
+          <input
+            type="number"
+            aria-describedby="increase bpm"
+            placeholder="80"
+            className="w-12 bg-gray-200 font-bold m-0 mb-0"
+            value={BPM}
+            onChange={(e) => handleBPM(Number(e.target.value))}
+          ></input>
+          <label className="font-bold">BPM</label>
+        </div>
       </div>
+      {/* Sequencer */}
       <div className="-p-10 -mb-20">
         {samples.map((sample) => (
           <div key={"1"}>

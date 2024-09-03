@@ -15,7 +15,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - [x] Turn into a component
 - [x] Create custom audio player
 - [x] Create mpc
-  - [ ] Add playing
+  - [x] Add playing
+  - [ ] Add volume controls
+  - [ ] Add ability to see which notes are playing
+  - [ ] Add Sequencer input
+  - [ ] Add bpm input
 - [ ] Add support for other formats
 - [ ] may need to look out for regions start and end time with min max
 - [ ] Styling

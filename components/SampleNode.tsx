@@ -41,6 +41,7 @@ export let SampleNode = ({
   };
 
   useEffect(() => {
+    console.log("anytjong");
     const playAudio = (index: number) => {
       console.log("hji" + node.Sequence[sequenceShowing]);
       // if (!muted && node.Sequence[sequenceShowing][index] == true) {

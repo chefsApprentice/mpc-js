@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
-import { ISample, playNoteChannel } from "./Sampler";
+import { forwardRef, useImperativeHandle, useState } from "react";
+import { ISample } from "./Sampler";
 import { NoteNode } from "./NoteNode";
 
-export let SampleNode = ({
-  node,
-  sequenceShowing,
-}: {
-  node: ISample;
-  sequenceShowing: number;
-}) => {
+// eslint-disable-next-line react/display-name
+export let SampleNode = forwardRef<
+  any,
+  { node: ISample; sequenceShowing: number }
+>((props, ref) => {
+  const { node, sequenceShowing, ...otherprops } = props;
+
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
   const [name, setName] = useState("Sample " + node.id);
-  const [sequence, setSequence] = useState(node.Sequence);
   let play = new Audio(node.url);
 
   const handleEnabled = (id: number, enabled: boolean) => {
     node.Sequence[sequenceShowing][id] = enabled;
-    let fakeSeq = sequence;
-    fakeSeq[sequenceShowing][id] = enabled;
-    setSequence(fakeSeq);
   };
 
   const handleVolume = (newVol: number) => {
@@ -33,41 +29,25 @@ export let SampleNode = ({
     play.volume = muted ? volume : 0;
   };
 
-  const start = () => {
+  const playAudio = () => {
     if (!muted) {
       play.volume = volume;
       play.play();
     }
   };
 
-  useEffect(() => {
-    const playAudio = (index: number) => {
-      console.log("hji" + node.Sequence[sequenceShowing]);
-      // if (!muted && node.Sequence[sequenceShowing][index] == true) {
-      if (!muted && sequence[sequenceShowing][index]) {
-        play.volume = volume;
-        play.play();
-      }
-    };
-
-    const unsubOnPlayNote = playNoteChannel.on(
-      "onPlayNote",
-      (index: number) => {
-        playAudio(index);
-      }
-    );
-
-    return () => {
-      unsubOnPlayNote();
-    };
-  }, [node]);
+  useImperativeHandle(ref, () => ({
+    play() {
+      playAudio();
+    },
+  }));
 
   return (
     <div className="flex-row flex -mb-6 align-middle">
       <div className="bg-teal-800 w-64 align-middle align-text-middle flex text-white">
         {/* Name / Play */}
         <button
-          onClick={start}
+          onClick={playAudio}
           className=" pl-2 pr-4"
           // className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded mt-10"
         >
@@ -130,4 +110,4 @@ export let SampleNode = ({
       </div>
     </div>
   );
-};
+});

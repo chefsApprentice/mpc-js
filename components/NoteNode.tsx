@@ -10,8 +10,8 @@ export let NoteNode = ({
   let [enabled, setEnabled] = useState(false);
 
   let handleSwitch = () => {
+    handleEnabled(id, !enabled);
     setEnabled(!enabled);
-    handleEnabled(id, enabled);
   };
 
   return (

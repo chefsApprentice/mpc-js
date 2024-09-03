@@ -194,7 +194,7 @@ export let AudioPlayer = ({
         </button>
         {/* Play */}
         <button onClick={handlePlayPause} className="bg-gray-200">
-          {!playing ? (
+          {playing ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

@@ -14,7 +14,8 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
   - [x] Based on time
   - [x] Turn into a component
 - [x] Create custom audio player
-- [ ] Create mpc
+- [x] Create mpc
+  - [ ] Add playing
 - [ ] Add support for other formats
 - [ ] may need to look out for regions start and end time with min max
 - [ ] Styling
@@ -24,6 +25,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [ ] Fix refresh on trim
 - [ ] Fix Player looping
 - [ ] Fix default trim time not working
+- [ ] What happens if no sequence enabled?
 
 ## Deploy on Vercel
 

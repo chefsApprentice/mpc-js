@@ -27,3 +27,9 @@ body {
     text-wrap: balance;
   }
 }
+
+.vranger {
+  margin-top: 50px;
+  transform: rotate(270deg);
+  -moz-transform: rotate(270deg); /*do same for other browsers if required*/
+}

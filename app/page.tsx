@@ -117,7 +117,7 @@ export default function Home() {
         )}
       </audio> */}
       <div className=" flex flex-row  mt-20">
-        <p className="text-red-500 font-black text-6xl  pr-10 ">MPC JS</p>
+        <p className="text-red-500 font-black text-6xl pr-10 ">MPC JS</p>
         {audio ? (
           <AudioPlayer
             audioFile={URL.createObjectURL(audioRef.current!)}

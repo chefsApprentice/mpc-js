@@ -65,7 +65,7 @@ export let SampleNode = ({
 
   return (
     <div className="flex-row flex -mb-6 align-middle">
-      <div className="bg-teal-800 w-64 align-middle align-text-middle flex text-white">
+      <div className="SoundHolder w-64 align-middle align-text-middle flex text-white p-5 ">
         {/* Name / Play */}
         <button
           onClick={start}
@@ -111,7 +111,7 @@ export let SampleNode = ({
 
         {/* Volume slider */}
         <input
-          className="accent-white"
+          className="accent-white mr-3 w-20"
           type="range"
           id="volume"
           name="volume"
@@ -122,7 +122,7 @@ export let SampleNode = ({
           onChange={(e) => handleVolume(parseFloat(e.target.value))}
         />
       </div>
-      <div className="bg-gray-300 min-w-fullflex-row flex p-5 ml-10">
+      <div className="SamplerBackground  min-w-fullflex-row flex p-5 ml-10">
         {node.Sequence[sequenceShowing].map((note, id) => (
           <div key={id} className="">
             <NoteNode id={id} handleEnabled={handleEnabled} />

@@ -143,7 +143,7 @@ export let AudioPlayer = ({
   }, [audioFile]);
 
   return (
-    <div className="flex flex-row ml-20 ">
+    <div className="flex flex-row ">
       <div className="w-96 ">
         <div className="align-middle align-text-middle justify-center items-center">
           <div>
@@ -155,7 +155,7 @@ export let AudioPlayer = ({
             {/* You should add a link / download button */}
 
             {/* Trim */}
-            <button onClick={handleTrim} className="bg-gray-200  ml-0 m-2 p-2">
+            <button onClick={handleTrim} className="ButtonBg  ml-0 m-2 p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -176,7 +176,7 @@ export let AudioPlayer = ({
             <button
               onClick={handleLoop}
               id="looping"
-              className="bg-gray-200  ml-0 m-2 p-2"
+              className="ButtonBg  ml-0 m-2 p-2"
               aria-label={"val:" + looping}
             >
               <svg
@@ -197,7 +197,7 @@ export let AudioPlayer = ({
             {/* Play */}
             <button
               onClick={handlePlayPause}
-              className="bg-gray-200  ml-0 m-2 p-2"
+              className="ButtonBg  ml-0 m-2 p-2"
             >
               {playing ? (
                 <svg

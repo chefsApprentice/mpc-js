@@ -131,7 +131,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
         {/* Play / Pause */}
         <button
           onClick={handlePlayPause}
-          className="bg-red-500 p-2 m-2 ml-0 text-white"
+          className="RedAccent p-2 m-2 ml-0 text-white"
         >
           {playing ? (
             <svg
@@ -166,7 +166,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
         {/* Reset cur index*/}
         <button
           onClick={() => setCurIndex(0)}
-          className="bg-gray-200  ml-0 m-2 p-2"
+          className="ButtonBg  ml-0 m-2 p-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -184,12 +184,12 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
           </svg>
         </button>
         {/* BPM */}
-        <div className="flex flex-row bg-gray-200 p-2 w-26 h-10 mr-0">
+        <div className="flex flex-row ButtonBg p-2 w-26 h-10 mr-0">
           <input
             type="number"
             aria-describedby="increase bpm"
             placeholder="80"
-            className="w-12 bg-gray-200 font-bold m-0 mb-0"
+            className="w-12 ButtonBg font-bold m-0 mb-0"
             value={BPM}
             onChange={(e) => handleBPM(Number(e.target.value))}
           ></input>

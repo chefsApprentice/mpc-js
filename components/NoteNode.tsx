@@ -18,8 +18,8 @@ export let NoteNode = ({
     <button
       className={
         (enabled
-          ? "bg-red-600 hover:bg-red-700  "
-          : "bg-gray-50 hover:bg-gray-200") +
+          ? "RedAccent hover:bg-red-700  "
+          : "SampleBackground hover:bg-gray-200") +
         " text-white py-5 px-5 ml-5 rounded "
       }
       onClick={handleSwitch}

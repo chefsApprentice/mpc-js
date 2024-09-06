@@ -5,9 +5,11 @@ import { NoteNode } from "./NoteNode";
 export let SampleNode = ({
   node,
   sequenceShowing,
+  curIndex,
 }: {
   node: ISample;
   sequenceShowing: number;
+  curIndex: number;
 }) => {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
@@ -17,7 +19,7 @@ export let SampleNode = ({
 
   const handleEnabled = (id: number, enabled: boolean) => {
     node.Sequence[sequenceShowing][id] = enabled;
-    let fakeSeq = sequence;
+    let fakeSeq = [...sequence];
     fakeSeq[sequenceShowing][id] = enabled;
     setSequence(fakeSeq);
   };
@@ -42,7 +44,6 @@ export let SampleNode = ({
 
   useEffect(() => {
     const playAudio = (index: number) => {
-      console.log("hji" + node.Sequence[sequenceShowing]);
       // if (!muted && node.Sequence[sequenceShowing][index] == true) {
       if (!muted && sequence[sequenceShowing][index]) {
         play.volume = volume;
@@ -64,7 +65,7 @@ export let SampleNode = ({
 
   return (
     <div className="flex-row flex -mb-6 align-middle">
-      <div className="bg-teal-800 w-64 align-middle align-text-middle flex text-white">
+      <div className="SoundHolder w-64 align-middle align-text-middle flex text-white p-5 ">
         {/* Name / Play */}
         <button
           onClick={start}
@@ -110,7 +111,7 @@ export let SampleNode = ({
 
         {/* Volume slider */}
         <input
-          className="accent-white"
+          className="accent-white mr-3 w-20"
           type="range"
           id="volume"
           name="volume"
@@ -121,10 +122,15 @@ export let SampleNode = ({
           onChange={(e) => handleVolume(parseFloat(e.target.value))}
         />
       </div>
-      <div className="bg-gray-300 min-w-fullflex-row flex p-5 ml-10">
+      <div className="SamplerBackground  min-w-fullflex-row flex p-5 ml-10">
         {node.Sequence[sequenceShowing].map((note, id) => (
           <div key={id} className="">
-            <NoteNode id={id} handleEnabled={handleEnabled} />
+            <NoteNode
+              id={id}
+              handleEnabled={handleEnabled}
+              enabled={note}
+              curIndex={curIndex}
+            />
           </div>
         ))}
       </div>

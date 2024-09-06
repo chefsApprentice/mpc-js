@@ -5,6 +5,7 @@ import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ISample, Sampler } from "@/components/Sampler";
+// import { SequenceNode } from "@/components/SequenceNode";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -69,7 +70,7 @@ export default function Home() {
     let input = audio;
     await ffmpeg.writeFile("input.mp3", await fetchFile(input!));
     let duration = trimTime.current[1] - trimTime.current[0];
-    console.log("trim", trimTime);
+    // console.log("trim", trimTime);
     await ffmpeg.exec([
       "-ss",
       trimTime.current[0].toString(),
@@ -107,8 +108,7 @@ export default function Home() {
   };
 
   return loaded ? (
-    // <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-    <div className="ml-40">
+    <div className="ml-80">
       {/* <audio ref={audioRef} controls>
         {audio ? (
           <source src={URL.createObjectURL(audio)} type="audio/mp3" />
@@ -117,7 +117,18 @@ export default function Home() {
         )}
       </audio> */}
       <div className=" flex flex-row  mt-20">
-        <p className="text-red-500 font-black text-6xl  pr-10 ">MPC JS</p>
+        <div className="flex flex-col">
+          <p className="RedText font-black text-6xl pr-10 ">MPC JS</p>
+          <br />
+          <input
+            type="file"
+            onChange={(e) => setInputAudio(e.target.files?.item(0))}
+          />
+          {/* <div>
+            <SequenceNode />
+          </div> */}
+        </div>
+
         {audio ? (
           <AudioPlayer
             audioFile={URL.createObjectURL(audioRef.current!)}
@@ -125,21 +136,20 @@ export default function Home() {
             setTrimming={handleTrim}
           />
         ) : (
-          <></>
+          <div className="w-96 waveColor p-5">
+            <div className="align-middle align-text-middle justify-center items-center">
+              Upload a file to begin chopping!
+            </div>
+          </div>
         )}
       </div>
-      <br />
-      <input
-        type="file"
-        onChange={(e) => setInputAudio(e.target.files?.item(0))}
-      />
+
       {/* <button
         onClick={trimAudio}
         className="bg-green-500 hover:bg-green-700 text-white py-3 px-6 rounded"
       >
         Trim the audio
       </button> */}
-      <br />
       <Sampler samples={samples} />
       {/* <button
         onClick={start}

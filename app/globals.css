@@ -19,11 +19,45 @@
 body {
   /* color: rgb(var(--foreground-rgb)); */
   color: black;
-  background-color: rgb(243 244 246);
+  background-color: #e5e5e5;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.vranger {
+  margin-top: 50px;
+  transform: rotate(270deg);
+  -moz-transform: rotate(270deg); /*do same for other browsers if required*/
+}
+
+.SoundHolder {
+  background-color: #4c6a72;
+}
+
+.waveColor {
+  padding: 10;
+  background-color: #27c19a;
+  border-radius: 15px;
+  color: white;
+}
+
+.SamplerBackground {
+  background-color: #babec1;
+}
+
+.SampleBackground {
+  background-color: #d9d9d9;
+}
+.RedAccent {
+  background-color: #ff3914;
+}
+.RedText {
+  color: #ff3914;
+}
+.ButtonBg {
+  background-color: #d9d9d9;
 }

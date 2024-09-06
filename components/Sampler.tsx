@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SampleNode } from "./SampleNode";
 import { eventbus } from "@/utils/eventBus";
+import { SequenceNode } from "./SequenceNode";
 
 export interface ISample {
   id: number;
@@ -39,6 +40,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     false,
     false,
   ]);
+
   const [timerCount, setTimerCount] = useState(0);
 
   let samplerInfo: ISampler = { BPM: 80, SequenceShowing: 0 };
@@ -47,6 +49,12 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
   //   if (samples[curSequence].Sequence[index]) samples[curSequence].url;
   // };
 
+  let handleSequence = (index: number) => {
+    let fakeSeq = [...SequenceEnabled];
+    fakeSeq[index] = !fakeSeq[index];
+    setSequenceEnabled(fakeSeq);
+  };
+
   let handleBPM = (newBPM: number) => {
     if (newBPM <= 10) setBPM(10);
     else if (newBPM >= 500) setBPM(500);
@@ -54,10 +62,10 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
   };
 
   let playSequence = () => {
-    console.log("Hi");
+    // console.log("Hi");
     // const loop = () => {
     if (!playing) return;
-    console.log("we made it");
+    // console.log("we made it");
     playNoteChannel.emit("onPlayNote", curIndex);
 
     if (curIndex + 1 >= 8) {
@@ -105,7 +113,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
 
   useEffect(() => {
     const delay = 60000 / BPM;
-    console.log("em" + curIndex);
+    // console.log("em" + curIndex);
 
     const timer = setInterval(() => {
       playSequence();
@@ -114,18 +122,22 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     return () => clearInterval(timer);
   });
 
-  // useEffect(() => {
-  //   let delay = 60000 / BPM;
-  //   delay = 1000;
-  //   const timePlay = setTimeout(() => playSequence, delay);
-
-  //   // playSequence();
-
-  //   return () => clearTimeout(timePlay);
-  // }, [playing]);
-
   return (
-    <div>
+    <div className="absolute mt-2">
+      {/* Sequencer */}
+      <div className="grid grid-cols-4 w-64 mb-5 -ml-">
+        {SequenceEnabled.map((sequence, id) => (
+          <div key={id}>
+            <SequenceNode
+              index={id}
+              handleSeq={handleSequence}
+              seqState={sequence}
+              setSelectedCur={setCurSequence}
+              curSelected={curSequence}
+            />
+          </div>
+        ))}
+      </div>
       {/* Controls */}
       <div className="flex flex-row align-middle justify-center items-center align-text-middle w-64 ">
         {/* Play / Pause */}
@@ -196,11 +208,11 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
           <label className="font-bold">BPM</label>
         </div>
       </div>
-      {/* Sequencer */}
+      {/* Sampler */}
       <div className="-p-10 -mb-20">
         {samples.map((sample) => (
           <div key={"1"}>
-            <SampleNode node={sample} sequenceShowing={0} />
+            <SampleNode node={sample} sequenceShowing={curSequence} />
             <br />
           </div>
         ))}

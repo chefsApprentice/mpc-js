@@ -38,6 +38,13 @@ body {
   background-color: #4c6a72;
 }
 
+.waveColor {
+  padding: 10;
+  background-color: #27c19a;
+  border-radius: 15px;
+  color: white;
+}
+
 .SamplerBackground {
   background-color: #babec1;
 }

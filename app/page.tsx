@@ -5,7 +5,7 @@ import { AudioPlayer } from "../components/AudioPlayer";
 import { fetchFile, toBlobURL } from "@ffmpeg/util";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ISample, Sampler } from "@/components/Sampler";
-import { SequenceNode } from "@/components/SequenceNode";
+// import { SequenceNode } from "@/components/SequenceNode";
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
@@ -108,8 +108,7 @@ export default function Home() {
   };
 
   return loaded ? (
-    // <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
-    <div className="ml-40">
+    <div className="ml-80">
       {/* <audio ref={audioRef} controls>
         {audio ? (
           <source src={URL.createObjectURL(audio)} type="audio/mp3" />
@@ -125,9 +124,9 @@ export default function Home() {
             type="file"
             onChange={(e) => setInputAudio(e.target.files?.item(0))}
           />
-          <div>
+          {/* <div>
             <SequenceNode />
-          </div>
+          </div> */}
         </div>
 
         {audio ? (
@@ -137,7 +136,11 @@ export default function Home() {
             setTrimming={handleTrim}
           />
         ) : (
-          <></>
+          <div className="w-96 waveColor p-5">
+            <div className="align-middle align-text-middle justify-center items-center">
+              Upload a file to begin chopping!
+            </div>
+          </div>
         )}
       </div>
 

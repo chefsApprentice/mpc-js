@@ -143,7 +143,7 @@ export let AudioPlayer = ({
   }, [audioFile]);
 
   return (
-    <div className="flex flex-row ">
+    <div className="flex flex-row absolute z-50 ml-96">
       <div className="w-96 ">
         <div className="align-middle align-text-middle justify-center items-center">
           <div>

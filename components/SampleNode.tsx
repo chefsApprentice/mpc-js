@@ -17,7 +17,7 @@ export let SampleNode = ({
 
   const handleEnabled = (id: number, enabled: boolean) => {
     node.Sequence[sequenceShowing][id] = enabled;
-    let fakeSeq = sequence;
+    let fakeSeq = [...sequence];
     fakeSeq[sequenceShowing][id] = enabled;
     setSequence(fakeSeq);
   };
@@ -41,9 +41,7 @@ export let SampleNode = ({
   };
 
   useEffect(() => {
-    console.log("anytjong");
     const playAudio = (index: number) => {
-      console.log("hji" + node.Sequence[sequenceShowing]);
       // if (!muted && node.Sequence[sequenceShowing][index] == true) {
       if (!muted && sequence[sequenceShowing][index]) {
         play.volume = volume;
@@ -125,7 +123,7 @@ export let SampleNode = ({
       <div className="SamplerBackground  min-w-fullflex-row flex p-5 ml-10">
         {node.Sequence[sequenceShowing].map((note, id) => (
           <div key={id} className="">
-            <NoteNode id={id} handleEnabled={handleEnabled} />
+            <NoteNode id={id} handleEnabled={handleEnabled} enabled={note} />
           </div>
         ))}
       </div>

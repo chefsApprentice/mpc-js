@@ -2,16 +2,17 @@ import { useState } from "react";
 
 export let NoteNode = ({
   id,
+  enabled,
   handleEnabled,
 }: {
   id: number;
+  enabled: boolean;
   handleEnabled: any;
 }) => {
-  let [enabled, setEnabled] = useState(false);
+  // let [fakeEnabled, setFakeEnabled] = useState(false);
 
   let handleSwitch = () => {
     handleEnabled(id, !enabled);
-    setEnabled(!enabled);
   };
 
   return (
@@ -23,6 +24,8 @@ export let NoteNode = ({
         " text-white py-5 px-5 ml-5 rounded "
       }
       onClick={handleSwitch}
-    ></button>
+    >
+      {enabled}
+    </button>
   );
 };

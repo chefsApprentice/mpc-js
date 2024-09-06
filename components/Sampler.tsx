@@ -212,7 +212,11 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
       <div className="-p-10 -mb-20">
         {samples.map((sample) => (
           <div key={"1"}>
-            <SampleNode node={sample} sequenceShowing={curSequence} />
+            <SampleNode
+              node={sample}
+              sequenceShowing={curSequence}
+              curIndex={curIndex}
+            />
             <br />
           </div>
         ))}

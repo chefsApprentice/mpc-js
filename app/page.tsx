@@ -70,7 +70,7 @@ export default function Home() {
     let input = audio;
     await ffmpeg.writeFile("input.mp3", await fetchFile(input!));
     let duration = trimTime.current[1] - trimTime.current[0];
-    console.log("trim", trimTime);
+    // console.log("trim", trimTime);
     await ffmpeg.exec([
       "-ss",
       trimTime.current[0].toString(),

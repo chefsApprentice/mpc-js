@@ -5,9 +5,11 @@ import { NoteNode } from "./NoteNode";
 export let SampleNode = ({
   node,
   sequenceShowing,
+  curIndex,
 }: {
   node: ISample;
   sequenceShowing: number;
+  curIndex: number;
 }) => {
   const [muted, setMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
@@ -123,7 +125,12 @@ export let SampleNode = ({
       <div className="SamplerBackground  min-w-fullflex-row flex p-5 ml-10">
         {node.Sequence[sequenceShowing].map((note, id) => (
           <div key={id} className="">
-            <NoteNode id={id} handleEnabled={handleEnabled} enabled={note} />
+            <NoteNode
+              id={id}
+              handleEnabled={handleEnabled}
+              enabled={note}
+              curIndex={curIndex}
+            />
           </div>
         ))}
       </div>

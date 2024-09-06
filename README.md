@@ -17,19 +17,19 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] Create mpc
   - [x] Add playing
   - [ ] Add volume controls
-  - [ ] Add ability to see which notes are playing
-  - [ ] Add Sequencer input
+  - [x] Add ability to see which notes are playing
+  - [x] Add Sequencer input
   - [x] Add bpm input
 - [ ] Add support for other formats
 - [ ] may need to look out for regions start and end time with min max
-- [ ] Styling
+- [x] Styling
 
 # Bugs
 
 - [ ] Fix refresh on trim
 - [ ] Fix Player looping
 - [ ] Fix default trim time not working
-- [ ] What happens if no sequence enabled?
+- [x] What happens if no sequence enabled?
 - [ ] Wont play if sound is currently playing
 
 - The AudioContext encountered an error from the audio device or the WebAudio renderer. Display restart your computer

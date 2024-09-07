@@ -66,7 +66,8 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     // const loop = () => {
     if (!playing) return;
     // console.log("we made it");
-    playNoteChannel.emit("onPlayNote", curIndex);
+    console.log("cur", curIndex);
+    // playNoteChannel.emit("onPlayNote", curIndex);
 
     if (curIndex + 1 >= 8) {
       setCurIndex(0);
@@ -76,6 +77,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
       if (findSeq != -1) {
         setCurSequence(curSequence + 1 + findSeq);
         // setTimeout(loop, delay);
+
         return;
       }
 
@@ -85,12 +87,12 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
         setCurSequence(findSeq);
         // return;
         // setTimeout(loop, delay);
+
         return;
       }
 
       // curSequence is the same otherwise, we have already reset index
-      // return;
-      // setTimeout(loop, delay);
+
       return;
     }
 
@@ -105,7 +107,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
   let handlePlayPause = () => {
     setPlaying(!playing);
     if (!playing) {
-      setCurIndex(curIndex + 1);
+      // setCurIndex(curIndex + 1);
       // eslint-disable-next-line react-hooks/rules-of-hooks
       // playSequence();
     }
@@ -211,7 +213,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
       {/* Sampler */}
       <div className="-p-10 -mb-20">
         {samples.map((sample) => (
-          <div key={"1"}>
+          <div key={sample.id}>
             <SampleNode
               node={sample}
               sequenceShowing={curSequence}

@@ -42,26 +42,40 @@ export let SampleNode = ({
     }
   };
 
+  // useEffect(() => {
+  //   const playAudio = (index: number) => {
+  //     console.log("index", index);
+  //     // if (!muted && node.Sequence[sequenceShowing][index] == true) {
+  //     if (!muted && sequence[sequenceShowing][index]) {
+  //       play.volume = volume;
+  //       play.play();
+  //     }
+  //   };
+
+  //   const unsubOnPlayNote = playNoteChannel.on(
+  //     "onPlayNote",
+  //     (index: number) => {
+  //       playAudio(index);
+  //     }
+  //   );
+
+  //   return () => {
+  //     unsubOnPlayNote();
+  //   };
+  // }, [node]);
+
+  const playAudio = (index: number) => {
+    console.log("index", index);
+    // if (!muted && node.Sequence[sequenceShowing][index] == true) {
+    if (!muted && sequence[sequenceShowing][index]) {
+      play.volume = volume;
+      play.play();
+    }
+  };
+
   useEffect(() => {
-    const playAudio = (index: number) => {
-      // if (!muted && node.Sequence[sequenceShowing][index] == true) {
-      if (!muted && sequence[sequenceShowing][index]) {
-        play.volume = volume;
-        play.play();
-      }
-    };
-
-    const unsubOnPlayNote = playNoteChannel.on(
-      "onPlayNote",
-      (index: number) => {
-        playAudio(index);
-      }
-    );
-
-    return () => {
-      unsubOnPlayNote();
-    };
-  }, [node]);
+    playAudio(curIndex);
+  }, [curIndex]);
 
   return (
     <div className="flex-row flex -mb-6 align-middle">

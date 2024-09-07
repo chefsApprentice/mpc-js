@@ -31,7 +31,7 @@ export let NoteNode = ({
       }
       onClick={handleSwitch}
     >
-      {enabled}
+      {id} {curIndex}
     </button>
   );
 };

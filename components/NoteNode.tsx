@@ -30,8 +30,6 @@ export let NoteNode = ({
         " text-white py-5 px-5 ml-5 rounded "
       }
       onClick={handleSwitch}
-    >
-      {id} {curIndex}
-    </button>
+    ></button>
   );
 };

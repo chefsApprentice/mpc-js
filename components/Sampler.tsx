@@ -22,7 +22,7 @@ export const playNoteChannel = eventbus<{
 
 export let Sampler = ({ samples }: { samples: ISample[] }) => {
   const [playing, setPlaying] = useState(false);
-  const [BPM, setBPM] = useState(80);
+  const [BPM, setBPM] = useState("80");
   // Technically could do this with just id, but this is easier
   const [curIndex, setCurIndex] = useState(0);
   const [curSequence, setCurSequence] = useState(0);
@@ -40,10 +40,14 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     false,
     false,
   ]);
-
   const [timerCount, setTimerCount] = useState(0);
-
   let samplerInfo: ISampler = { BPM: 80, SequenceShowing: 0 };
+
+  const isValid = (value: number, min = 10, max = 500) =>
+    // value !== "" && value !== "-" &&
+    value >= min && value <= max;
+
+  const [validBPM, setValidBPM] = useState(isValid(parseInt(BPM)));
 
   // let playOneNote = (index: number) => {
   //   if (samples[curSequence].Sequence[index]) samples[curSequence].url;
@@ -54,11 +58,41 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     fakeSeq[index] = !fakeSeq[index];
     setSequenceEnabled(fakeSeq);
   };
+  let handleCurStop = () => {
+    setPlaying(false);
+    setCurIndex(0);
+  };
 
-  let handleBPM = (newBPM: number) => {
-    if (newBPM <= 10) setBPM(10);
-    else if (newBPM >= 500) setBPM(500);
-    else setBPM(newBPM);
+  let trimZeroes = (n: number) => {
+    let arr = n.toString().split("");
+    let nonZero = true;
+    while (nonZero) {
+      console.log("arr0 " + arr[0]);
+      console.log(arr[0] == "0");
+      if (arr[0] == "0") arr.splice(0, 1);
+      else nonZero = false;
+    }
+    console.log(arr);
+    let returnNum = arr.join("");
+    console.log(returnNum);
+    return parseInt(returnNum);
+  };
+
+  let handleBPMChange = (newBPM: number) => {
+    setPlaying(false);
+    let newestBpm = trimZeroes(newBPM);
+    setBPM(newestBpm.toString());
+    let newValid = isValid(newBPM);
+    setValidBPM(newValid);
+  };
+
+  let handleBPMBlur = (newBPM: number) => {
+    if (newBPM <= 10) setBPM("10");
+    else if (newBPM >= 500) setBPM("500");
+    else setBPM(trimZeroes(newBPM).toString());
+
+    setValidBPM(true);
+    setPlaying(true);
   };
 
   let playSequence = () => {
@@ -66,7 +100,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     // const loop = () => {
     if (!playing) return;
     // console.log("we made it");
-    console.log("cur", curIndex);
+    // console.log("cur", curIndex);
     // playNoteChannel.emit("onPlayNote", curIndex);
 
     if (curIndex + 1 >= 8) {
@@ -97,7 +131,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
     }
 
     setCurIndex(curIndex + 1);
-    console.log(curIndex);
+    // console.log(curIndex);
 
     // return () => clearInterval(customInterval);
     // Kickstart
@@ -114,7 +148,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
   };
 
   useEffect(() => {
-    const delay = 60000 / BPM;
+    const delay = 60000 / parseInt(BPM);
     // console.log("em" + curIndex);
 
     const timer = setInterval(() => {
@@ -179,7 +213,7 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
         </button>
         {/* Reset cur index*/}
         <button
-          onClick={() => setCurIndex(0)}
+          onClick={() => handleCurStop()}
           className="ButtonBg  ml-0 m-2 p-2"
         >
           <svg
@@ -204,8 +238,9 @@ export let Sampler = ({ samples }: { samples: ISample[] }) => {
             aria-describedby="increase bpm"
             placeholder="80"
             className="w-12 ButtonBg font-bold m-0 mb-0"
-            value={BPM}
-            onChange={(e) => handleBPM(Number(e.target.value))}
+            value={parseInt(BPM)}
+            onChange={(e) => handleBPMChange(Number(e.target.value))}
+            onBlur={(e) => handleBPMBlur(Number(e.target.value))}
           ></input>
           <label className="font-bold">BPM</label>
         </div>

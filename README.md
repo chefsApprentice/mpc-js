@@ -16,7 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [x] Create custom audio player
 - [x] Create mpc
   - [x] Add playing
-  - [ ] Add volume controls
+  - [x] Add volume controls
   - [x] Add ability to see which notes are playing
   - [x] Add Sequencer input
   - [x] Add bpm input
@@ -28,9 +28,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - [ ] Fix refresh on trim
 - [ ] Fix Player looping
+- [ ] Chopper wont change playing state icon if u click on it
 - [ ] Fix default trim time not working
 - [x] What happens if no sequence enabled?
-- [ ] Wont play if sound is currently playing
+- [x] Wont play if sound is currently playing
+- [ ] Fix leading zero in BPM
+- [ ] Sequencer causes stutter / pause
+- [x] Number input trimming and editing
+- [ ] When reset index, still plays audio due to not knowing when play is enabled
+- [ ] Maybe break some of the components out, such as BPM
 
 - The AudioContext encountered an error from the audio device or the WebAudio renderer. Display restart your computer
 

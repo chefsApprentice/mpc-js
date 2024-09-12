@@ -65,9 +65,10 @@ export let SampleNode = ({
   // }, [node]);
 
   const playAudio = (index: number) => {
-    console.log("index", index);
     // if (!muted && node.Sequence[sequenceShowing][index] == true) {
     if (!muted && sequence[sequenceShowing][index]) {
+      play.pause();
+      play = new Audio(node.url);
       play.volume = volume;
       play.play();
     }
